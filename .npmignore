@@ -1,0 +1,13 @@
+# Source code (not needed — dist/ is the built output)
+src/
+tsconfig.json
+tsup.config.ts
+.editorconfig
+.prettierrc
+.nvmrc
+.env
+
+# Dev artifacts
+*.db
+*.db-journal
+.whats-cli/
