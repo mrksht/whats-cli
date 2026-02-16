@@ -1,5 +1,5 @@
 {
-  "name": "whats-cli",
+  "name": "whatsapp-terminal",
   "version": "0.1.0",
   "description": "WhatsApp in your terminal — send & receive messages with a beautiful TUI",
   "type": "module",
