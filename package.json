@@ -23,7 +23,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rakshit/whats-cli"
+    "url": "https://github.com/mrksht/whats-cli"
   },
   "files": [
     "dist",
