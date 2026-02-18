@@ -92,30 +92,29 @@ export function useMessages(
   selectedChat: Chat | null
 ) {
   const [messages, setMessages] = useState<Message[]>([])
+  const selectedJid = selectedChat?.jid ?? null
 
   // Load messages when selected chat changes
   useEffect(() => {
-    if (!selectedChat || !service.current) {
+    if (!selectedJid || !service.current) {
       setMessages([])
       return
     }
 
-    const loadedMessages = service.current.getMessages(selectedChat.jid)
+    const loadedMessages = service.current.getMessages(selectedJid)
     setMessages(loadedMessages)
-
-    // Reset unread count when opening a chat
-    resetUnreadCount(selectedChat.jid)
-  }, [selectedChat?.jid, service])
+    resetUnreadCount(selectedJid)
+  }, [selectedJid]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Listen for new messages for the active chat
   useEffect(() => {
     const svc = service.current
-    if (!svc || !selectedChat) return
+    if (!svc || !selectedJid) return
 
     const handleMessage = (msg: Message) => {
-      if (msg.chatJid === selectedChat.jid) {
+      if (msg.chatJid === selectedJid) {
         setMessages((prev) => [...prev, msg])
-        resetUnreadCount(selectedChat.jid)
+        resetUnreadCount(selectedJid)
       }
     }
 
@@ -123,7 +122,7 @@ export function useMessages(
     return () => {
       svc.removeListener('message', handleMessage)
     }
-  }, [selectedChat?.jid, service])
+  }, [selectedJid]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return { messages }
 }

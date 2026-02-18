@@ -98,7 +98,7 @@ function ChatListItem({ chat, isSelected, isFocused, nameWidth }: ChatListItemPr
 
   const displayName = chat.name || chat.jid.split('@')[0] || chat.jid
   const prefix = chat.isGroup ? '👥 ' : ''
-  const unread = chat.unreadCount > 0 ? ` (${chat.unreadCount})` : ''
+  const unreadDot = chat.unreadCount > 0 ? ' ●' : ''
   const time = chat.lastMessageAt ? formatTimestamp(chat.lastMessageAt) : ''
 
   return (
@@ -111,10 +111,10 @@ function ChatListItem({ chat, isSelected, isFocused, nameWidth }: ChatListItemPr
             bold={chat.unreadCount > 0}
           >
             {prefix}
-            {truncate(displayName, nameWidth - prefix.length - unread.length)}
-            {unread && (
-              <Text color="yellow" bold>
-                {unread}
+            {truncate(displayName, nameWidth - prefix.length - unreadDot.length)}
+            {unreadDot && (
+              <Text color="green" bold>
+                {unreadDot}
               </Text>
             )}
           </Text>

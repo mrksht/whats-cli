@@ -251,6 +251,81 @@ export function getMessagesForChat(chatJid: string, limit = 100): Message[] {
   }))
 }
 
+export function searchMessagesInChat(chatJid: string, query: string, limit = 100): Message[] {
+  const db = getDb()
+  const searchPattern = `%${query}%`
+  const rows = db
+    .prepare(
+      `SELECT * FROM (
+        SELECT * FROM messages
+        WHERE chat_jid = ? AND body LIKE ? COLLATE NOCASE
+        ORDER BY timestamp DESC LIMIT ?
+      ) sub ORDER BY timestamp ASC`
+    )
+    .all(chatJid, searchPattern, limit) as Array<{
+    id: string
+    chat_jid: string
+    sender_jid: string
+    sender_name: string
+    body: string
+    timestamp: number
+    is_from_me: number
+    status: string
+    type: string
+  }>
+
+  return rows.map((row) => ({
+    id: row.id,
+    chatJid: row.chat_jid,
+    senderJid: row.sender_jid,
+    senderName: row.sender_name,
+    body: row.body,
+    timestamp: row.timestamp,
+    isFromMe: row.is_from_me === 1,
+    status: row.status as MessageStatus,
+    type: row.type as MessageType,
+  }))
+}
+
+/**
+ * Search across ALL messages globally. Returns the last `limit` matches by timestamp (most recent first).
+ */
+export function searchAllMessages(query: string, limit = 10): Message[] {
+  const db = getDb()
+  const searchPattern = `%${query}%`
+  const rows = db
+    .prepare(
+      `SELECT * FROM (
+        SELECT * FROM messages
+        WHERE body LIKE ? COLLATE NOCASE
+        ORDER BY timestamp DESC LIMIT ?
+      ) sub ORDER BY timestamp DESC`
+    )
+    .all(searchPattern, limit) as Array<{
+    id: string
+    chat_jid: string
+    sender_jid: string
+    sender_name: string
+    body: string
+    timestamp: number
+    is_from_me: number
+    status: string
+    type: string
+  }>
+
+  return rows.map((row) => ({
+    id: row.id,
+    chatJid: row.chat_jid,
+    senderJid: row.sender_jid,
+    senderName: row.sender_name,
+    body: row.body,
+    timestamp: row.timestamp,
+    isFromMe: row.is_from_me === 1,
+    status: row.status as MessageStatus,
+    type: row.type as MessageType,
+  }))
+}
+
 export function updateMessageStatus(id: string, status: MessageStatus): void {
   const db = getDb()
   db.prepare('UPDATE messages SET status = ? WHERE id = ?').run(status, id)

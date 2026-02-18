@@ -98,3 +98,40 @@ export function jidToPhoneNumber(jid: string): string {
 export function isGroupJid(jid: string): boolean {
   return jid.endsWith('@g.us')
 }
+
+/**
+ * Split text by search query for highlighting purposes.
+ * Returns an array of { text, isMatch } segments.
+ */
+export function splitBySearchTerm(
+  text: string,
+  query: string
+): Array<{ text: string; isMatch: boolean }> {
+  if (!query) {
+    return [{ text, isMatch: false }]
+  }
+
+  const segments: Array<{ text: string; isMatch: boolean }> = []
+  const lowerText = text.toLowerCase()
+  const lowerQuery = query.toLowerCase()
+  let lastEnd = 0
+
+  let pos = lowerText.indexOf(lowerQuery)
+  while (pos !== -1) {
+    // Add non-matching segment before the match
+    if (pos > lastEnd) {
+      segments.push({ text: text.slice(lastEnd, pos), isMatch: false })
+    }
+    // Add the matching segment (preserve original case)
+    segments.push({ text: text.slice(pos, pos + query.length), isMatch: true })
+    lastEnd = pos + query.length
+    pos = lowerText.indexOf(lowerQuery, lastEnd)
+  }
+
+  // Add remaining non-matching segment
+  if (lastEnd < text.length) {
+    segments.push({ text: text.slice(lastEnd), isMatch: false })
+  }
+
+  return segments.length > 0 ? segments : [{ text, isMatch: false }]
+}
