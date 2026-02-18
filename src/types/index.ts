@@ -86,6 +86,7 @@ export enum FocusArea {
   ChatList = 'chat-list',
   MessageView = 'message-view',
   InputBar = 'input-bar',
+  SearchBar = 'search-bar',
 }
 
 export const APP_NAME = 'whats-cli'

@@ -553,7 +553,7 @@ export class WhatsAppService extends EventEmitter {
       return { body: '📌 Kept a message', type: MessageType.Text }
     }
 
-    return { body: '[Unsupported message]', type: MessageType.Unknown }
+    return { body: '💬 [Unsupported message]', type: MessageType.Unknown }
   }
 
   /**
